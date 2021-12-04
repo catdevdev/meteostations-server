@@ -6,10 +6,12 @@ import { ConfigModule } from '@nestjs/config';
 import { WeatherRecord } from './weather-record/weather-record.model';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { WeatherRecordModule } from './weather-record/weather-record.module';
+import { UsersService } from './users/users.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [UsersService],
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
@@ -26,6 +28,7 @@ import { WeatherRecordModule } from './weather-record/weather-record.module';
       synchronize: true,
     }),
     WeatherRecordModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
