@@ -20,6 +20,7 @@ export class WeatherRecord extends Model<WeatherRecord, WeatherRecordAttrs> {
     primaryKey: true,
   })
   id: number;
+  
   @ApiProperty({
     example: '583947b1-19f4-4573-a595-faf52e147cf5',
     description: 'Meteostation Id',
