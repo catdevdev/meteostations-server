@@ -35,7 +35,7 @@ export class Role extends Model<Role, RoleAttrs> {
     description: 'this is role description',
   })
   @Column({
-    type: DataType.DOUBLE,
+    type: DataType.STRING,
     allowNull: false,
   })
   description: string; 

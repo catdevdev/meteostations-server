@@ -41,7 +41,7 @@ export class User extends Model<User, UserAttrs> {
     description: 'password',
   })
   @Column({
-    type: DataType.DOUBLE,
+    type: DataType.STRING,
     allowNull: false,
   })
   password: string;
