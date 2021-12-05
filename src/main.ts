@@ -10,6 +10,7 @@ async function bootstrap() {
     .setDescription('Documentation REST API')
     .setVersion('1.0.0')
     .addTag('WR')
+    .addBearerAuth()
     .build();
   const documentation = SwaggerModule.createDocument(app, config);
 
