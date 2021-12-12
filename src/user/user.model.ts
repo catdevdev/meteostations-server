@@ -3,11 +3,13 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Role } from 'src/role/role.model';
 import { UserRole } from 'src/role/user-roles.model';
+import { WeatherRecord } from 'src/weather-record/weather-record.model';
 
 interface UserAttrs {
   username: string;
@@ -48,4 +50,7 @@ export class User extends Model<User, UserAttrs> {
 
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
+
+  @HasMany(() => WeatherRecord)
+  weatherRecord: WeatherRecord[];
 }

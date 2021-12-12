@@ -10,7 +10,7 @@ export class WeatherRecordService {
     private weatherRecordModel: typeof WeatherRecord,
   ) {}
 
-  async createWeatherRecord(dto: CreateWeatherRecordDto) {
+  async createWeatherRecord(dto: CreateWeatherRecordDto & { userId: number }) {
     const weatherRecord = await this.weatherRecordModel.create(dto);
     return weatherRecord;
   }

@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CurrentUser } from 'src/auth/current-user.decorator';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { User } from 'src/user/user.model';
 import { CreateWeatherRecordDto } from './dto/create-weather-record.dto';
 import { WeatherRecord } from './weather-record.model';
 import { WeatherRecordService } from './weather-record.service';
@@ -12,14 +21,21 @@ export class WeatherRecordController {
   @ApiOperation({ summary: 'Creation Weather Record' })
   @ApiResponse({ status: 200, type: WeatherRecord })
   @Post()
-  create(@Body() createWeatherRecordDto: CreateWeatherRecordDto) {
-    return this.weatherRecordService.createWeatherRecord(
-      createWeatherRecordDto,
-    );
+  createWeatherRecord(
+    @Body() createWeatherRecordDto: CreateWeatherRecordDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.weatherRecordService.createWeatherRecord({
+      ...createWeatherRecordDto,
+      userId: user.id,
+    });
   }
 
   @ApiOperation({ summary: 'Return All Weather Records' })
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, type: [WeatherRecord] })
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Get()
   getAll() {
     return this.weatherRecordService.getAllWeatherRecords();

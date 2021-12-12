@@ -1,8 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { User } from 'src/user/user.model';
 
 interface WeatherRecordAttrs {
-  meteostationId: string;
   pressureFromBMP180: number;
   temperatureFromBMP180: number;
   temperatureFromDTH22: number;
@@ -20,15 +27,6 @@ export class WeatherRecord extends Model<WeatherRecord, WeatherRecordAttrs> {
     primaryKey: true,
   })
   id: number;
-  
-  @ApiProperty({
-    example: '583947b1-19f4-4573-a595-faf52e147cf5',
-    description: 'Meteostation Id',
-  })
-  @Column({
-    type: DataType.STRING,
-  })
-  meteostationId: string;
 
   @ApiProperty({
     example: '100045.23',
@@ -74,4 +72,11 @@ export class WeatherRecord extends Model<WeatherRecord, WeatherRecordAttrs> {
     type: DataType.INTEGER,
   })
   analogSignalFromRainSensor: number;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  userId: number;
+
+  @BelongsTo(() => User)
+  meteostation: string;
 }
