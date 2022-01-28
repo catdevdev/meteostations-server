@@ -17,7 +17,7 @@ interface WeatherRecordAttrs {
   analogSignalFromRainSensor: number;
 }
 
-@Table({ tableName: 'WeatherRecord' })
+@Table({ tableName: 'WeatherRecord', updatedAt: false })
 export class WeatherRecord extends Model<WeatherRecord, WeatherRecordAttrs> {
   @ApiProperty({ example: '1', description: 'Unique Id' })
   @Column({
@@ -72,6 +72,15 @@ export class WeatherRecord extends Model<WeatherRecord, WeatherRecordAttrs> {
     type: DataType.INTEGER,
   })
   analogSignalFromRainSensor: number;
+
+  @ApiProperty({
+    example: '192',
+    description: 'signal level per record',
+  })
+  @Column({
+    type: DataType.INTEGER,
+  })
+  rssi: number;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })

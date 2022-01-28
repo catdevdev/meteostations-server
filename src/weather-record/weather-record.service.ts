@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { PubSub } from 'graphql-subscriptions';
 import { CreateWeatherRecordDto } from './dto/create-weather-record.dto';
 import { WeatherRecord } from './weather-record.model';
+
+export const pubSub = new PubSub();
 
 @Injectable()
 export class WeatherRecordService {
@@ -12,6 +15,10 @@ export class WeatherRecordService {
 
   async createWeatherRecord(dto: CreateWeatherRecordDto & { userId: number }) {
     const weatherRecord = await this.weatherRecordModel.create(dto);
+    console.log(weatherRecord);
+    pubSub.publish('weather_station_record', {
+      currentWeatherStationData: weatherRecord,
+    });
     return weatherRecord;
   }
 

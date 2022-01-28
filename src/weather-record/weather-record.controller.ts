@@ -19,7 +19,10 @@ export class WeatherRecordController {
   constructor(private weatherRecordService: WeatherRecordService) {}
 
   @ApiOperation({ summary: 'Creation Weather Record' })
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, type: WeatherRecord })
+  @Roles('WEATHERSTATION')
+  @UseGuards(RolesGuard)
   @Post()
   createWeatherRecord(
     @Body() createWeatherRecordDto: CreateWeatherRecordDto,

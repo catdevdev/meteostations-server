@@ -6,13 +6,14 @@ import { User } from 'src/user/user.model';
 import { WeatherRecordController } from './weather-record.controller';
 import { WeatherRecord } from './weather-record.model';
 import { WeatherRecordService } from './weather-record.service';
+import { WeatherRecordResolver } from './weather-record.resolver';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     SequelizeModule.forFeature([WeatherRecord, User]),
   ],
-  providers: [WeatherRecordService],
+  providers: [WeatherRecordService, WeatherRecordResolver],
   controllers: [WeatherRecordController],
 })
 export class WeatherRecordModule {}
