@@ -13,10 +13,11 @@ import { AuthModule } from './auth/auth.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { DevicesService } from './devices/devices.service';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [DevicesService],
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,

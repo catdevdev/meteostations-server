@@ -36,10 +36,4 @@ export class CreateWeatherRecordDto {
     description: 'signal level per record',
   })
   readonly rssi: number;
-
-  // @ApiProperty({
-  //   example: '2',
-  //   description: 'meteostation 1',
-  // })
-  // readonly meteostationId: number;
 }

@@ -15,7 +15,6 @@ export class WeatherRecordService {
 
   async createWeatherRecord(dto: CreateWeatherRecordDto & { userId: number }) {
     const weatherRecord = await this.weatherRecordModel.create(dto);
-    console.log(weatherRecord);
     pubSub.publish('weather_station_record', {
       currentWeatherStationData: weatherRecord,
     });
@@ -23,6 +22,11 @@ export class WeatherRecordService {
   }
 
   async getAllWeatherRecords() {
+    const weatherRecords = await this.weatherRecordModel.findAll();
+    return weatherRecords;
+  }
+
+  async getAvailableDates(options: ) {
     const weatherRecord = await this.weatherRecordModel.findAll();
     return weatherRecord;
   }
