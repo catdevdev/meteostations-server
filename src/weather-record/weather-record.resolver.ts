@@ -5,8 +5,6 @@ import { pubSub, WeatherRecordService } from './weather-record.service';
 
 @Resolver()
 export class WeatherRecordResolver {
-  constructor() {}
-
   @Query(() => String)
   sayHello(): string {
     return 'Hello World!';

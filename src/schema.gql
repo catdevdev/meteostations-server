@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Device {
+  userId: Float!
+  username: String!
+}
+
+type OnlineDevice {
+  device: Device!
+  isOnline: Boolean!
+}
+
 type WeatherRecordType {
   pressureFromBMP180: Float!
   temperatureFromBMP180: Float!
@@ -20,10 +30,12 @@ scalar DateTime
 
 type Query {
   sayHello: String!
+  devices: [OnlineDevice!]!
 }
 
 type Subscription {
   currentWeatherStationData(input: CurrentWeatherStationDataInput!): WeatherRecordType!
+  updateDeviceOnlineStatus: OnlineDevice!
 }
 
 input CurrentWeatherStationDataInput {

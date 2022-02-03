@@ -5,7 +5,6 @@ import { RoleController } from './role.controller';
 import { Role } from './role.model';
 import { UserRole } from './user-roles.model';
 import { RoleService } from './role.service';
-import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({

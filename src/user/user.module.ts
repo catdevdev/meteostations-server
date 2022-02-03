@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from 'src/auth/auth.module';
+import { DevicesModule } from 'src/devices/devices.module';
 import { Role } from 'src/role/role.model';
 import { RoleModule } from 'src/role/role.module';
 import { WeatherRecord } from 'src/weather-record/weather-record.model';
@@ -16,6 +17,6 @@ import { UserService } from './user.service';
     RoleModule,
     forwardRef(() => AuthModule),
   ],
-  exports: [UserService],
+  exports: [UserService, SequelizeModule],
 })
 export class UserModule {}

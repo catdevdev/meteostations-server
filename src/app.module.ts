@@ -14,6 +14,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { DevicesService } from './devices/devices.service';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({
   controllers: [],
@@ -44,6 +45,7 @@ import { DevicesService } from './devices/devices.service';
     UserModule,
     RoleModule,
     AuthModule,
+    DevicesModule,
   ],
 })
 export class AppModule {}
