@@ -12,11 +12,16 @@ type OnlineDevice {
   isOnline: Boolean!
 }
 
+type CurrentOnlineDevice {
+  userId: Float!
+  isOnline: Boolean!
+}
+
 type WeatherRecordType {
-  pressureFromBMP180: Float!
-  temperatureFromBMP180: Float!
-  temperatureFromDTH22: Float!
-  humidityFromDTH22: String!
+  pressureFromBMP180: Float
+  temperatureFromBMP180: Float
+  temperatureFromDTH22: Float
+  humidityFromDTH22: Float
   analogSignalFromRainSensor: Float!
   rssi: Float!
   userId: Float!
@@ -29,13 +34,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  sayHello: String!
+  weatherStationData(input: WeatherStationBetweenDates!): [WeatherRecordType!]!
   devices: [OnlineDevice!]!
+}
+
+input WeatherStationBetweenDates {
+  startDate: String!
+  endDate: String!
 }
 
 type Subscription {
   currentWeatherStationData(input: CurrentWeatherStationDataInput!): WeatherRecordType!
-  updateDeviceOnlineStatus: OnlineDevice!
+  updateDeviceOnlineStatus: CurrentOnlineDevice!
 }
 
 input CurrentWeatherStationDataInput {

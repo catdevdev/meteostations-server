@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PubSub } from 'graphql-subscriptions';
+import { Op } from 'sequelize';
 import { DevicesService } from 'src/devices/devices.service';
 import { User } from 'src/user/user.model';
 import { CreateWeatherRecordDto } from './dto/create-weather-record.dto';
@@ -13,8 +14,6 @@ export class WeatherRecordService {
   constructor(
     @InjectModel(WeatherRecord)
     private weatherRecordModel: typeof WeatherRecord,
-    @InjectModel(User)
-    private userModel: typeof User,
     private devicesService: DevicesService,
   ) {}
 
@@ -23,30 +22,24 @@ export class WeatherRecordService {
     pubSub.publish('weather_station_record', {
       currentWeatherStationData: weatherRecord,
     });
-
-    const userThatCreatedWeatherRecord = await this.userModel.findOne({
-      where: {
-        id: dto.userId,
-      },
-    });
-
-    const onlineDevice = {
-      device: {
-        userId: userThatCreatedWeatherRecord.id,
-        username: userThatCreatedWeatherRecord.username,
-      },
-      isOnline: true,
-    };
-
-    pubSub.publish('update_device_online_status', {
-      updateDeviceOnlineStatus: onlineDevice,
-    });
-    this.devicesService.OnlineDevices.push(userThatCreatedWeatherRecord);
+    this.devicesService.updateOnlineStatusOfDevice(dto.userId);
     return weatherRecord;
   }
 
   async getAllWeatherRecords() {
     const weatherRecords = await this.weatherRecordModel.findAll();
+    return weatherRecords;
+  }
+
+  async getWeatherRecordsByDateInterval(startDate: Date, endDate: Date) {
+    const weatherRecords = await this.weatherRecordModel.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
     return weatherRecords;
   }
 }

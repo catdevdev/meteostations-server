@@ -2,10 +2,23 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class WeatherRecordType {
-  @Field() pressureFromBMP180: number;
-  @Field() temperatureFromBMP180: number;
-  @Field() temperatureFromDTH22: number;
-  @Field() humidityFromDTH22: string;
+  @Field({
+    nullable: true,
+  })
+  pressureFromBMP180: number;
+  @Field({
+    nullable: true,
+  })
+  temperatureFromBMP180: number;
+  @Field({
+    nullable: true,
+  })
+  temperatureFromDTH22: number;
+  @Field({
+    nullable: true,
+  })
+  humidityFromDTH22: number;
+
   @Field() analogSignalFromRainSensor: number;
   @Field() rssi: number;
   @Field() userId: number;

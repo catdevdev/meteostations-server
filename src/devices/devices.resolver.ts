@@ -1,7 +1,7 @@
 import { Args, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { pubSub } from 'src/weather-record/weather-record.service';
-import { DevicesService } from './devices.service';
-import { OnlineDevice } from './dto/device.dto';
+
+import { DevicesService, pubSub } from './devices.service';
+import { CurrentOnlineDevice, OnlineDevice } from './dto/device.dto';
 
 @Resolver()
 export class DevicesResolver {
@@ -18,7 +18,7 @@ export class DevicesResolver {
     });
   }
 
-  @Subscription(() => OnlineDevice)
+  @Subscription(() => CurrentOnlineDevice)
   updateDeviceOnlineStatus() {
     return pubSub.asyncIterator('update_device_online_status');
   }

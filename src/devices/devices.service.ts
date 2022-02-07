@@ -5,7 +5,10 @@ import { User } from 'src/user/user.model';
 import { WeatherRecord } from 'src/weather-record/weather-record.model';
 import * as moment from 'moment';
 import { Role } from 'src/role/role.model';
-import { OnlineUser } from './types';
+
+import { PubSub } from 'graphql-subscriptions';
+
+export const pubSub = new PubSub();
 
 @Injectable()
 export class DevicesService {
@@ -14,14 +17,45 @@ export class DevicesService {
     private userRepository: typeof User,
   ) {}
 
-  public OnlineDevices: User[] = [];
+  private timerID: ReturnType<typeof setTimeout>;
+
+  private onlineDevicesId: number[] = [];
+
+  public async updateOnlineStatusOfDevice(userId: number) {
+    clearTimeout(this.timerID);
+    const isOnlineDevice = this.onlineDevicesId.some(
+      (deviceId) => userId === deviceId,
+    );
+    if (!isOnlineDevice) {
+      const onlineDevice = {
+        userId,
+        isOnline: true,
+      };
+      pubSub.publish('update_device_online_status', {
+        updateDeviceOnlineStatus: onlineDevice,
+      });
+      this.onlineDevicesId.push(userId);
+    }
+    this.timerID = setTimeout(() => {
+      const offlineDevice = {
+        userId,
+        isOnline: false,
+      };
+      pubSub.publish('update_device_online_status', {
+        updateDeviceOnlineStatus: offlineDevice,
+      });
+      this.onlineDevicesId = this.onlineDevicesId.filter(
+        (deviceId) => deviceId !== userId,
+      );
+    }, 5000);
+  }
 
   private async getOnlineDevices() {
     const onlineDevices = await this.userRepository.findAll({
       where: {
         // @ts-ignore
         '$weatherRecord.createdAt$': {
-          [Op.gte]: moment().subtract(10, 'seconds').toDate(),
+          [Op.gte]: moment().subtract(5, 'seconds').toDate(),
         },
       },
       include: [

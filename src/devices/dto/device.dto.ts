@@ -11,3 +11,9 @@ export class OnlineDevice {
   @Field(() => Device) device: Device;
   @Field() isOnline: boolean;
 }
+
+@ObjectType()
+export class CurrentOnlineDevice {
+  @Field() userId: number;
+  @Field() isOnline: boolean;
+}
