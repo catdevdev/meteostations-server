@@ -7,9 +7,22 @@ export class WeatherStationBetweenDates {
   @Field()
   endDate: string;
 }
+@InputType()
+export class WeatherStationSpecifications {
+  @Field()
+  weatherStationIds: number[];
+}
+
+@InputType()
+export class WeatherStationUsers {
+  @Field()
+  startDate: string;
+  @Field()
+  endDate: string;
+}
 
 @InputType()
 export class CurrentWeatherStationDataInput {
   @Field()
-  userId: string;
+  userId: number;
 }

@@ -31,11 +31,18 @@ export class WeatherRecordService {
     return weatherRecords;
   }
 
-  async getWeatherRecordsByDateInterval(startDate: Date, endDate: Date) {
+  async getWeatherRecordsByDateInterval(
+    startDate: Date,
+    endDate: Date,
+    weatherStationIds: number[],
+  ) {
     const weatherRecords = await this.weatherRecordModel.findAll({
       where: {
         createdAt: {
           [Op.between]: [startDate, endDate],
+        },
+        userId: {
+          [Op.contained]: weatherStationIds,
         },
       },
     });

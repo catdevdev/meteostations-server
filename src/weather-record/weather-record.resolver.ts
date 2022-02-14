@@ -3,26 +3,25 @@ import { WeatherRecordType } from './dto/weather-record.dto';
 import {
   CurrentWeatherStationDataInput,
   WeatherStationBetweenDates,
+  WeatherStationSpecifications,
 } from './inputs/current-weather-station-data.input';
-import { WeatherRecord } from './weather-record.model';
 import { pubSub, WeatherRecordService } from './weather-record.service';
-import test from 'simplify-js';
 
 @Resolver()
 export class WeatherRecordResolver {
   constructor(private weatherRecordService: WeatherRecordService) {}
   @Query(() => [WeatherRecordType])
   async weatherStationData(
-    @Args('input') input: WeatherStationBetweenDates,
+    @Args('dateRange') dateRange: WeatherStationBetweenDates,
+    @Args('weatherStationIds')
+    weatherStationSpecifications: WeatherStationSpecifications,
   ): Promise<WeatherRecordType[]> {
     const weatherStationData =
       (await this.weatherRecordService.getWeatherRecordsByDateInterval(
-        new Date(input.startDate),
-        new Date(input.endDate),
+        new Date(dateRange.startDate),
+        new Date(dateRange.endDate),
+        weatherStationSpecifications.weatherStationIds,
       )) as WeatherRecordType[];
-
-    console.log(weatherStationData.length);
-    test.
 
     return weatherStationData.map((weatherStationRecord) => {
       return {
