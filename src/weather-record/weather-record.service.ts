@@ -42,7 +42,7 @@ export class WeatherRecordService {
           [Op.between]: [startDate, endDate],
         },
         userId: {
-          [Op.contained]: weatherStationIds,
+          [Op.in]: weatherStationIds,
         },
       },
     });

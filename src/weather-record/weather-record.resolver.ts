@@ -20,7 +20,9 @@ export class WeatherRecordResolver {
       (await this.weatherRecordService.getWeatherRecordsByDateInterval(
         new Date(dateRange.startDate),
         new Date(dateRange.endDate),
-        weatherStationSpecifications.weatherStationIds,
+        weatherStationSpecifications.weatherStationIds.map(
+          ({ userId }) => userId,
+        ),
       )) as WeatherRecordType[];
 
     return weatherStationData.map((weatherStationRecord) => {

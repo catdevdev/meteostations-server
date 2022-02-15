@@ -9,8 +9,14 @@ export class WeatherStationBetweenDates {
 }
 @InputType()
 export class WeatherStationSpecifications {
+  @Field(() => [WeatherStationUserId])
+  weatherStationIds: WeatherStationUserId[];
+}
+
+@InputType()
+class WeatherStationUserId {
   @Field()
-  weatherStationIds: number[];
+  userId: number;
 }
 
 @InputType()
