@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class WeatherRecordType {
@@ -19,8 +19,20 @@ export class WeatherRecordType {
   })
   humidityFromDTH22: number;
 
-  @Field() analogSignalFromRainSensor: number;
-  @Field() rssi: number;
-  @Field() userId: number;
-  @Field() createdAt: Date;
+  @Field({
+    nullable: true,
+  })
+  analogSignalFromRainSensor: number;
+  @Field({
+    nullable: true,
+  })
+  rssi: number;
+  @Field({
+    nullable: true,
+  })
+  userId: number;
+  @Field({
+    nullable: true,
+  })
+  createdAt: Date;
 }

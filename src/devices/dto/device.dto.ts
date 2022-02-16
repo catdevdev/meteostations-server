@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { WeatherRecordType } from 'src/weather-record/dto/weather-record.dto';
 
 @ObjectType()
 class Device {
@@ -10,6 +11,7 @@ class Device {
 export class OnlineDevice {
   @Field(() => Device) device: Device;
   @Field() isOnline: boolean;
+  @Field(() => [WeatherRecordType]) weatherRecords: WeatherRecordType[];
 }
 
 @ObjectType()

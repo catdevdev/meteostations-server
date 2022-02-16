@@ -2,6 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type WeatherRecordType {
+  pressureFromBMP180: Float
+  temperatureFromBMP180: Float
+  temperatureFromDTH22: Float
+  humidityFromDTH22: Float
+  analogSignalFromRainSensor: Float
+  rssi: Float
+  userId: Float
+  createdAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Device {
   userId: Float!
   username: String!
@@ -10,6 +26,7 @@ type Device {
 type OnlineDevice {
   device: Device!
   isOnline: Boolean!
+  weatherRecords: [WeatherRecordType!]!
 }
 
 type CurrentOnlineDevice {
@@ -17,25 +34,9 @@ type CurrentOnlineDevice {
   isOnline: Boolean!
 }
 
-type WeatherRecordType {
-  pressureFromBMP180: Float
-  temperatureFromBMP180: Float
-  temperatureFromDTH22: Float
-  humidityFromDTH22: Float
-  analogSignalFromRainSensor: Float!
-  rssi: Float!
-  userId: Float!
-  createdAt: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Query {
   weatherStationData(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [WeatherRecordType!]!
-  devices: [OnlineDevice!]!
+  devices(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [OnlineDevice!]!
 }
 
 input WeatherStationSpecifications {

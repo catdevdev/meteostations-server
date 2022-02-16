@@ -17,6 +17,6 @@ import { DevicesModule } from 'src/devices/devices.module';
   ],
   providers: [WeatherRecordService, WeatherRecordResolver],
   controllers: [WeatherRecordController],
-  exports: [SequelizeModule],
+  exports: [SequelizeModule, WeatherRecordService],
 })
 export class WeatherRecordModule {}
