@@ -29,6 +29,6 @@ export class WeatherStationUsers {
 
 @InputType()
 export class CurrentWeatherStationDataInput {
-  @Field()
-  userId: number;
+  @Field(() => [Number])
+  userIds: number[];
 }

@@ -7,7 +7,7 @@ import {
 import { WeatherRecordService } from 'src/weather-record/weather-record.service';
 
 import { DevicesService, pubSub } from './devices.service';
-import { CurrentOnlineDevice, OnlineDevice } from './dto/device.dto';
+import { DeviceWithWeatherRecords, DeviceStatus } from './dto/device.dto';
 
 @Resolver()
 export class DevicesResolver {
@@ -15,12 +15,12 @@ export class DevicesResolver {
     private devicesService: DevicesService,
     private weatherRecordService: WeatherRecordService,
   ) {}
-  @Query(() => [OnlineDevice])
-  async devices(
+  @Query(() => [DeviceWithWeatherRecords])
+  async devicesWithWeatherRecords(
     @Args('dateRange') dateRange: WeatherStationBetweenDates,
     @Args('weatherStationIds')
     weatherStationSpecifications: WeatherStationSpecifications,
-  ): Promise<OnlineDevice[]> {
+  ): Promise<DeviceWithWeatherRecords[]> {
     const devices = await this.devicesService.getAllDevices();
     const weatherStationRecords =
       (await this.weatherRecordService.getWeatherRecordsByDateInterval(
@@ -42,7 +42,34 @@ export class DevicesResolver {
     });
   }
 
-  @Subscription(() => CurrentOnlineDevice)
+  @Query(() => [DeviceStatus])
+  async devicesStatus(
+    @Args('dateRange') dateRange: WeatherStationBetweenDates,
+    @Args('weatherStationIds')
+    weatherStationSpecifications: WeatherStationSpecifications,
+  ): Promise<DeviceStatus[]> {
+    const devices = await this.devicesService.getAllDevices();
+    const weatherStationRecords =
+      (await this.weatherRecordService.getWeatherRecordsByDateInterval(
+        new Date(dateRange.startDate),
+        new Date(dateRange.endDate),
+        weatherStationSpecifications.weatherStationIds.map(
+          ({ userId }) => userId,
+        ),
+      )) as WeatherRecordType[];
+
+    return devices.map(({ device, isOnline }) => {
+      return {
+        device: { userId: device.id, username: device.username },
+        isOnline,
+        weatherRecords: weatherStationRecords.filter(
+          ({ userId }) => userId === device.id,
+        ),
+      };
+    });
+  }
+
+  @Subscription(() => DeviceStatus)
   updateDeviceOnlineStatus() {
     return pubSub.asyncIterator('update_device_online_status');
   }

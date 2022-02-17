@@ -23,20 +23,21 @@ type Device {
   username: String!
 }
 
-type OnlineDevice {
+type DeviceWithWeatherRecords {
   device: Device!
   isOnline: Boolean!
   weatherRecords: [WeatherRecordType!]!
 }
 
-type CurrentOnlineDevice {
-  userId: Float!
+type DeviceStatus {
+  device: Device!
   isOnline: Boolean!
 }
 
 type Query {
   weatherStationData(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [WeatherRecordType!]!
-  devices(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [OnlineDevice!]!
+  devicesWithWeatherRecords(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [DeviceWithWeatherRecords!]!
+  devicesStatus(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [DeviceStatus!]!
 }
 
 input WeatherStationSpecifications {
@@ -54,9 +55,9 @@ input WeatherStationBetweenDates {
 
 type Subscription {
   currentWeatherStationData(input: CurrentWeatherStationDataInput!): WeatherRecordType!
-  updateDeviceOnlineStatus: CurrentOnlineDevice!
+  updateDeviceOnlineStatus: DeviceStatus!
 }
 
 input CurrentWeatherStationDataInput {
-  userId: Float!
+  userIds: [Float!]!
 }

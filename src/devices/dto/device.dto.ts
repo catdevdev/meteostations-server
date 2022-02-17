@@ -8,10 +8,16 @@ class Device {
 }
 
 @ObjectType()
-export class OnlineDevice {
+export class DeviceWithWeatherRecords {
   @Field(() => Device) device: Device;
   @Field() isOnline: boolean;
   @Field(() => [WeatherRecordType]) weatherRecords: WeatherRecordType[];
+}
+
+@ObjectType()
+export class DeviceStatus {
+  @Field(() => Device) device: Device;
+  @Field() isOnline: boolean;
 }
 
 @ObjectType()

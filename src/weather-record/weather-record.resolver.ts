@@ -42,10 +42,18 @@ export class WeatherRecordResolver {
 
   @Subscription(() => WeatherRecordType, {
     filter: (payload, variables) => {
-      if (variables.input.userId) {
-        return (
-          payload.currentWeatherStationData.userId == variables.input.userId
-        );
+      // if (variables.input.userIds) {
+      //   return (
+      //     payload.currentWeatherStationData.userId == variables.input.userId
+      //   );
+      // }
+      // return true;
+      if (variables.input.userIds) {
+        return variables.input.userIds.some((userId: number) => {
+          console.log(payload.currentWeatherStationData.userId);
+          console.log(userId);
+          return payload.currentWeatherStationData.userId === userId;
+        });
       }
       return true;
     },
