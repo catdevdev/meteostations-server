@@ -1,5 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { WeatherRecordType } from 'src/weather-record/dto/weather-record.dto';
+import {
+  WeatherRecordGroupedByTimeIntervalType,
+  WeatherRecordType,
+} from 'src/weather-record/dto/weather-record.dto';
 
 @ObjectType()
 class Device {
@@ -11,7 +14,15 @@ class Device {
 export class DeviceWithWeatherRecords {
   @Field(() => Device) device: Device;
   @Field() isOnline: boolean;
-  @Field(() => [WeatherRecordType]) weatherRecords: WeatherRecordType[];
+  @Field(() => [WeatherRecordType])
+  weatherRecords: WeatherRecordType[];
+}
+
+@ObjectType()
+export class DeviceWithWeatherRecordsGroupedByTimeInterval {
+  @Field() weatherStationId: number;
+  @Field(() => [WeatherRecordGroupedByTimeIntervalType])
+  weatherRecordsGroupedByTimeInterval: WeatherRecordGroupedByTimeIntervalType[];
 }
 
 @ObjectType()

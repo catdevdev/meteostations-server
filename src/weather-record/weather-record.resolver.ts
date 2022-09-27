@@ -1,5 +1,10 @@
 import { Args, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { WeatherRecordType } from './dto/weather-record.dto';
+import { runInContext } from 'lodash';
+import { Dictionary } from 'underscore';
+import {
+  WeatherRecordGroupedByTimeIntervalType,
+  WeatherRecordType,
+} from './dto/weather-record.dto';
 import {
   CurrentWeatherStationDataInput,
   WeatherStationBetweenDates,
@@ -10,6 +15,7 @@ import { pubSub, WeatherRecordService } from './weather-record.service';
 @Resolver()
 export class WeatherRecordResolver {
   constructor(private weatherRecordService: WeatherRecordService) {}
+
   @Query(() => [WeatherRecordType])
   async weatherStationData(
     @Args('dateRange') dateRange: WeatherStationBetweenDates,
@@ -40,18 +46,50 @@ export class WeatherRecordResolver {
     });
   }
 
+  @Query(() => [WeatherRecordGroupedByTimeIntervalType])
+  async weatherStationDataGroupByTimeInterval(
+    @Args('dateRange') dateRange: WeatherStationBetweenDates,
+    @Args('weatherStationIds')
+    weatherStationSpecifications: WeatherStationSpecifications,
+    @Args('groupByInterval')
+    groupByInterval: string,
+  ): Promise<WeatherRecordGroupedByTimeIntervalType[]> {
+    const weatherStationDataByTimeInterval =
+      (await this.weatherRecordService.getWeatherRecordsByTimeInterval(
+        new Date(dateRange.startDate),
+        new Date(dateRange.endDate),
+        weatherStationSpecifications.weatherStationIds.map(
+          ({ userId }) => userId,
+        ),
+        groupByInterval,
+      )) as Dictionary<WeatherRecordType[]>;
+
+    return Object.keys(weatherStationDataByTimeInterval).map((key) => {
+      return {
+        groupByInterval: key,
+        records: weatherStationDataByTimeInterval[key].map(
+          (weatherStationRecord) => {
+            return {
+              pressureFromBMP180: weatherStationRecord.pressureFromBMP180,
+              temperatureFromBMP180: weatherStationRecord.temperatureFromBMP180,
+              temperatureFromDTH22: weatherStationRecord.temperatureFromDTH22,
+              humidityFromDTH22: weatherStationRecord.humidityFromDTH22,
+              analogSignalFromRainSensor:
+                weatherStationRecord.analogSignalFromRainSensor,
+              rssi: weatherStationRecord.rssi,
+              userId: weatherStationRecord.userId,
+              createdAt: weatherStationRecord.createdAt,
+            };
+          },
+        ),
+      };
+    });
+  }
+
   @Subscription(() => WeatherRecordType, {
     filter: (payload, variables) => {
-      // if (variables.input.userIds) {
-      //   return (
-      //     payload.currentWeatherStationData.userId == variables.input.userId
-      //   );
-      // }
-      // return true;
       if (variables.input.userIds) {
         return variables.input.userIds.some((userId: number) => {
-          console.log(payload.currentWeatherStationData.userId);
-          console.log(userId);
           return payload.currentWeatherStationData.userId === userId;
         });
       }

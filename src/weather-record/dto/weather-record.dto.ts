@@ -36,3 +36,11 @@ export class WeatherRecordType {
   })
   createdAt: Date;
 }
+
+@ObjectType()
+export class WeatherRecordGroupedByTimeIntervalType {
+  @Field()
+  groupByInterval: string;
+  @Field(() => [WeatherRecordType])
+  records: WeatherRecordType[];
+}

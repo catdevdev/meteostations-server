@@ -18,6 +18,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type WeatherRecordGroupedByTimeIntervalType {
+  groupByInterval: String!
+  records: [WeatherRecordType!]!
+}
+
 type Device {
   userId: Float!
   username: String!
@@ -29,15 +34,27 @@ type DeviceWithWeatherRecords {
   weatherRecords: [WeatherRecordType!]!
 }
 
+type DeviceWithWeatherRecordsGroupedByTimeInterval {
+  weatherStationId: Float!
+  weatherRecordsGroupedByTimeInterval: [WeatherRecordGroupedByTimeIntervalType!]!
+}
+
 type DeviceStatus {
   device: Device!
   isOnline: Boolean!
 }
 
+type CurrentOnlineDevice {
+  userId: Float!
+  isOnline: Boolean!
+}
+
 type Query {
   weatherStationData(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [WeatherRecordType!]!
+  weatherStationDataGroupByTimeInterval(groupByInterval: String!, weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [WeatherRecordGroupedByTimeIntervalType!]!
   devicesWithWeatherRecords(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [DeviceWithWeatherRecords!]!
-  devicesStatus(weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [DeviceStatus!]!
+  devicesWithWeatherRecordsGroupByTimeInterval(groupByInterval: String!, weatherStationIds: WeatherStationSpecifications!, dateRange: WeatherStationBetweenDates!): [DeviceWithWeatherRecordsGroupedByTimeInterval!]!
+  devicesStatus: [DeviceStatus!]!
 }
 
 input WeatherStationSpecifications {
@@ -55,7 +72,7 @@ input WeatherStationBetweenDates {
 
 type Subscription {
   currentWeatherStationData(input: CurrentWeatherStationDataInput!): WeatherRecordType!
-  updateDeviceOnlineStatus: DeviceStatus!
+  updateDeviceOnlineStatus: CurrentOnlineDevice!
 }
 
 input CurrentWeatherStationDataInput {

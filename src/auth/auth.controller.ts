@@ -9,6 +9,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('/login')
   login(@Body() userDto: CreateUserDto) {
+    console.log(12);
     return this.authService.login(userDto);
   }
 

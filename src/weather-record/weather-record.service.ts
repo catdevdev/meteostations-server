@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PubSub } from 'graphql-subscriptions';
+import * as moment from 'moment';
 import { Op } from 'sequelize';
 import { DevicesService } from 'src/devices/devices.service';
 import { User } from 'src/user/user.model';
 import { CreateWeatherRecordDto } from './dto/create-weather-record.dto';
 import { WeatherRecord } from './weather-record.model';
+import _, { Dictionary } from 'underscore';
 
 export const pubSub = new PubSub();
 
@@ -48,5 +50,71 @@ export class WeatherRecordService {
     });
 
     return weatherRecords;
+  }
+
+  async getWeatherRecordsByTimeInterval(
+    startDate: Date,
+    endDate: Date,
+    weatherStationIds: number[],
+    groupByInterval: string,
+  ) {
+    const recordsByDateInterval = await this.getWeatherRecordsByDateInterval(
+      startDate,
+      endDate,
+      weatherStationIds,
+    );
+    // const records = [...recordsByDateInterval];
+    const intervals = {
+      minute: 'yyyy-hh-mm',
+      hour: 'yyyy-MMM-d-hh',
+      day: 'yyyy-MMM-d',
+      week: 'yyyy-MMM-ww',
+      month: 'yyyy-MMM',
+    };
+    const groupedByRecords = _.groupBy(recordsByDateInterval, (record) => {
+      return moment(record.createdAt).format(intervals[groupByInterval]);
+    });
+    return groupedByRecords;
+  }
+
+  async getWeatherRecordsByTimeIntervalGroupedByUserId(
+    startDate: Date,
+    endDate: Date,
+    weatherStationIds: number[],
+    groupByInterval: string,
+  ): Promise<Dictionary<WeatherRecord[]>[]> {
+    const recordsByDateInterval = await this.getWeatherRecordsByDateInterval(
+      startDate,
+      endDate,
+      weatherStationIds,
+    );
+
+    const recordsGroupedByUserId = weatherStationIds.map((userId) => {
+      return recordsByDateInterval.filter((record) => {
+        return record.userId === userId;
+      });
+    });
+
+    const intervals = {
+      minute: 'yyyy-hh-mm',
+      hour: 'yyyy-MMM-d-hh',
+      day: 'yyyy-MMM-d',
+      week: 'yyyy-MMM-ww',
+      month: 'yyyy-MMM',
+    };
+
+    const recordsGroupedByUserIdObject = recordsGroupedByUserId.map(
+      (records) => {
+        return _.groupBy(records, (record) => {
+          return moment(record.createdAt).format(intervals[groupByInterval]);
+        });
+      },
+    );
+
+    const records = Object.keys(recordsGroupedByUserIdObject).map((key) => {
+      return recordsGroupedByUserIdObject[key];
+    }) as Dictionary<WeatherRecord[]>[];
+
+    return records;
   }
 }
